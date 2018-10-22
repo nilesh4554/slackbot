@@ -3,16 +3,22 @@ import time
 import re
 from slackclient import SlackClient
 
+slack_token = os.environ['SLACK_BOT_TOKEN']
+slack_client = SlackClient(slack_token)
+
 
 # instantiate Slack client
-slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
+#slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 # starterbot's user ID in Slack: value is assigned after the bot starts up
 starterbot_id = None
+
 
 # constants
 RTM_READ_DELAY = 1 # 1 second delay between reading from RTM
 EXAMPLE_COMMAND = "do"
 MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
+
+print('at beggining')
 
 def parse_bot_commands(slack_events):
     """
@@ -50,16 +56,19 @@ def handle_command(command, channel):
         response = "Sure...write some more code then I can do that!"
 
     # Sends the response back to the channel
+    print('before api call')
     slack_client.api_call(
         "chat.postMessage",
         channel=channel,
         text=response or default_response
     )
 
+print('at name=main')
 if __name__ == "__main__":
     if slack_client.rtm_connect(with_team_state=False):
         print("Starter Bot connected and running!")
         # Read bot's user ID by calling Web API method `auth.test`
+        print('Nilesh')
         starterbot_id = slack_client.api_call("auth.test")["user_id"]
         while True:
             command, channel = parse_bot_commands(slack_client.rtm_read())
